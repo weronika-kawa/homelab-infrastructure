@@ -1,0 +1,41 @@
+{
+  // Define groups and access roles
+  "groups": {
+    "group:admin": ["admin@example.com"]
+  },
+
+  // Define aliases for local network devices and VPN clients (use placeholders for public templates)
+  "hosts": {
+    "admin-macbook":  "<admin-macbook-tailscale-ip>",
+    "admin-iphone":   "<admin-iphone-tailscale-ip>",
+    "user-phone":     "<user-phone-tailscale-ip>",
+    "user-desktop":   "<user-desktop-tailscale-ip>",
+    "reverse-proxy":  "<reverse-proxy-local-ip>", // IP of Nginx Proxy Manager 
+    "adguard-dns":    "<local-dns-ip>"            // IP of AdGuard Home
+  },
+
+  "acls": [
+    // 1. Admin MacBook has unrestricted access to all devices and ports (Proxmox, SSH, Databases, etc.)
+    {
+      "action": "accept",
+      "src":    ["admin-macbook"],
+      "dst":    ["*:*"]
+    },
+
+    // 2. All devices on the tailnet can ONLY access web services served by the Reverse Proxy (e.g., Nextcloud, Grafana)
+    //    on secure web ports (80, 443). Direct access to Proxmox GUI, SSH, or raw backend IPs is completely blocked.
+    {
+      "action": "accept",
+      "src":    ["*"],
+      "dst":    ["reverse-proxy:80", "reverse-proxy:443"]
+    },
+
+    // 3. All devices are allowed to query the local DNS server (AdGuard Home on port 53)
+    //    to enable centralized ad-blocking and local domain name resolution (DNS rewrites).
+    {
+      "action": "accept",
+      "src":    ["*"],
+      "dst":    ["adguard-dns:53"]
+    }
+  ]
+}
