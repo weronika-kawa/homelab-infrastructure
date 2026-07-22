@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80' # Ruch HTTP
+      - '443:443' # Ruch HTTPS
+      - '81:81' # Panel administracyjny NPM
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
