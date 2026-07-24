@@ -1,0 +1,47 @@
+# ==========================================
+# macOS System Files (Crucial for MacBooks)
+# ==========================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# ==========================================
+# Windows System Files
+# ==========================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ==========================================
+# Active Secrets & Private Configs (Do not upload!)
+# ==========================================
+.env
+config.php
+nextcloud.conf
+interfaces
+exports
+*.key
+*.pem
+*.token
+
+# ==========================================
+# Local Docker Data & DB Directories
+# ==========================================
+**/data/
+**/letsencrypt/
+**/postgres/
+**/redis/
+**/mysql/
+**/db-data/
+
+# ==========================================
+# IDE & Editor files
+# ==========================================
+.idea/
+.vscode/
+*.swp
+*.swo
