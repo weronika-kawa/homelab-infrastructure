@@ -35,7 +35,12 @@ graph TD
 
         subgraph VM 100: Private Cloud
             nc[Nextcloud VM]
-            db[(MariaDB)]
+            db_nc[(MariaDB)]
+        end
+
+        subgraph LXC 107: Photo Backup
+            immich[Immich Server]
+            db_im[(PostgreSQL)]
         end
 
         subgraph LXC 104: Telemetry
@@ -50,13 +55,16 @@ graph TD
     vpn -->|Segmented ACL Access| npm
     agh -->|DNS Rewrite| npm
     npm -->|Local HTTPS Termination| nc
-    nc --> db
+    npm -->|Local HTTPS Termination| immich
+    nc --> db_nc
+    immich --> db_im
     
     %% Monitoring Flows
     prom -->|Scrape metrics| vpn
     prom -->|Scrape metrics| npm
     prom -->|Scrape metrics| nc
     prom -->|Scrape metrics| agh
+    prom -->|Scrape metrics| immich
     graf -->|Query| prom
 ```
 
@@ -76,8 +84,9 @@ graph TD
 
 ### Applications
 - **Private Cloud:** Nextcloud Hub (TurnKey Linux appliance)
-- **Database:** MariaDB (MySQL)
-- **In-Memory Cache:** Redis (Nextcloud transactional file locking)
+- **Immich:** Self-hosted photo and video backup (Dockerized inside LXC 107)
+- **Database:** MariaDB (MySQL), PostgreSQL (Immich)
+- **In-Memory Cache:** Redis (Nextcloud transactional file locking & Immich session cache)
 
 ### Edge, DNS & TLS
 - **Reverse Proxy:** Nginx Proxy Manager (Dockerized inside LXC 105)
